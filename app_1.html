@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P.B. Siddhartha - CS Dept</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Smooth Fade In Animation */
+        .fade-in {
+            animation: fadeIn 0.7s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Slide In Animation for Menu */
+        .slide-in {
+            animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            transform: translateX(100%);
+        }
+
+        @keyframes slideIn {
+            to { transform: translateX(0); }
+        }
+        
+        /* Glass Effect Utility */
+        .glass-panel {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.3));
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+        
+        .glass-panel-dark {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* Hide Scrollbar for menu */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="min-h-screen bg-[#F5F5F7] text-[#1d1d1f] selection:bg-[#B3D7FF] selection:text-[#0066CC]">
+
+    <div class="fixed inset-0 z-0 pointer-events-none opacity-60 overflow-hidden">
+        <div class="absolute top-[-20%] left-[-10%] w-[90vw] h-[90vw] bg-gradient-to-r from-blue-200/30 to-purple-200/30 rounded-full blur-[150px]"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[70vw] h-[70vw] bg-gradient-to-l from-indigo-200/30 to-teal-200/30 rounded-full blur-[150px]"></div>
+    </div>
+
+    <div id="nav-overlay" class="fixed inset-0 z-50 flex justify-end hidden">
+        <div onclick="toggleMenu()" class="absolute inset-0 bg-black/20 backdrop-blur-sm transition-opacity cursor-pointer"></div>
+        
+        <div class="relative w-80 h-[calc(100vh-2rem)] mt-4 mr-4 glass-panel rounded-[32px] flex flex-col p-6 slide-in z-50">
+            <div class="absolute inset-0 rounded-[32px] bg-gradient-to-br from-white/40 via-transparent to-transparent pointer-events-none"></div>
+
+            <div class="relative z-10 flex justify-between items-center mb-8 px-2">
+                <h2 class="text-xl font-semibold tracking-tight text-[#1d1d1f]">Menu</h2>
+                <button onclick="toggleMenu()" class="p-2 bg-white/40 hover:bg-white/60 rounded-full transition-colors text-[#1d1d1f] shadow-sm border border-white/40">
+                    <i data-lucide="x" width="20"></i>
+                </button>
+            </div>
+            
+            <nav class="relative z-10 flex flex-col gap-2 overflow-y-auto flex-1 no-scrollbar">
+                <button onclick="navigate('home')" class="text-left px-5 py-3.5 rounded-2xl hover:bg-white/50 border border-transparent text-gray-700 font-medium hover:text-[#0066CC] transition-all text-sm">Dashboard</button>
+                <button onclick="navigate('dept-details')" class="text-left px-5 py-3.5 rounded-2xl hover:bg-white/50 border border-transparent text-gray-700 font-medium hover:text-[#0066CC] transition-all text-sm">About College</button>
+                <button onclick="navigate('dept-history')" class="text-left px-5 py-3.5 rounded-2xl hover:bg-white/50 border border-transparent text-gray-700 font-medium hover:text-[#0066CC] transition-all text-sm">College History</button>
+                <button onclick="navigate('faculty')" class="text-left px-5 py-3.5 rounded-2xl hover:bg-white/50 border border-transparent text-gray-700 font-medium hover:text-[#0066CC] transition-all text-sm">Our Faculty</button>
+                
+                <div class="h-px bg-gradient-to-r from-transparent via-gray-400/20 to-transparent mx-4 my-2"></div>
+                
+                <button onclick="toggleCoursesMenu()" class="text-left px-5 py-3.5 rounded-2xl hover:bg-white/50 border border-transparent text-gray-700 font-medium hover:text-[#0066CC] transition-all text-sm flex items-center justify-between">
+                    Our Courses 
+                    <i id="courses-dropdown-icon" data-lucide="chevron-down" width="16" class="transition-transform"></i>
+                </button>
+
+                <div id="courses-dropdown" class="hidden flex flex-col pl-4 gap-1">
+                    <button onclick="navigate('bsc-h-cs')" class="text-left px-5 py-2.5 rounded-xl hover:bg-white/50 border border-transparent text-gray-600 hover:text-[#0066CC] transition-all text-sm">B.Sc(H) CS</button>
+                    <button onclick="navigate('bsc-h-cscs')" class="text-left px-5 py-2.5 rounded-xl hover:bg-white/50 border border-transparent text-gray-600 hover:text-[#0066CC] transition-all text-sm">B.Sc(H) CSCS</button>
+                    <button onclick="navigate('bca-h')" class="text-left px-5 py-2.5 rounded-xl hover:bg-white/50 border border-transparent text-gray-600 hover:text-[#0066CC] transition-all text-sm">B.C.A(H)</button>
+                </div>
+                </nav>
+            
+            <div class="relative z-10 mt-auto pt-6 border-t border-white/20 text-xs text-gray-500 font-medium text-center">
+                P.B. Siddhartha Portal
+            </div>
+        </div>
+    </div>
+
+    <header id="main-header" class="sticky top-0 z-40 transition-all duration-500 py-6">
+        <div id="header-container" class="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between transition-all duration-500">
+            <div onclick="navigate('home')" class="flex items-center gap-2 cursor-pointer group pl-2">
+                <img src="logo.jpeg" alt="P.B. Siddhartha College Logo" class="w-16 h-16 object-cover rounded-full shadow-md"/>
+                <span class="font-bold text-sm tracking-wide text-[#1d1d1f]">P.B. SIDDHARTHA</span>
+            </div>
+
+            <button onclick="toggleMenu()" class="px-5 py-2 rounded-full bg-white/50 hover:bg-white/80 border border-white/40 text-sm font-medium text-[#1d1d1f] hover:text-[#0066CC] transition-all shadow-sm backdrop-blur-md flex items-center gap-2">
+                Menu
+            </button>
+        </div>
+    </header>
+
+    <main id="app-content" class="max-w-7xl mx-auto p-6 md:p-8 relative z-10 pb-20 min-h-[80vh]">
+        </main>
+
+    <footer class="relative z-10 border-t border-gray-200/60 bg-white/30 backdrop-blur-lg py-12">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-[#86868b]">
+            <p>Copyright © 2024 P.B. Siddhartha College of Arts & Science. All rights reserved.</p>
+            <div class="flex gap-6 font-medium">
+                <span class="cursor-pointer hover:text-[#0066CC] transition-colors">Privacy Policy</span>
+                <span class="cursor-pointer hover:text-[#0066CC] transition-colors">Student Portal</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- DATA ---
+        const departmentData = {
+            details: {
+                title: "Computer Science",
+                content: "Welcome to P.B. Siddhartha College of Arts & Science. Our Computer Science department is dedicated to academic excellence, fostering innovation, and preparing students for top-tier careers in the IT industry through our Autonomous curriculum.",
+                stats: [
+                    { label: "Students", value: "1.5k+" },
+                    { label: "Faculty", value: "60+" },
+                    { label: "Labs", value: "10" }
+                ]
+            },
+            history: {
+                title: "Our Legacy",
+                content: "P.B. Siddhartha College has been a beacon of education in Vijayawada for decades. The CS Department has evolved from humble beginnings to a center of excellence.",
+                milestones: [
+                    { year: "1975", event: "College Established" },
+                    { year: "1988", event: "Comp. Sci Dept Started" },
+                    { year: "2005", event: "Autonomous Status" },
+                    { year: "2018", event: "NAAC A+ Grade" }
+                ]
+            },
+            faculty: [
+                { name: "Dr. T.S Ravi Kiran", role: "Associate Professor, HoD", type: "head" },
+                { name: "K. Sudhir", role: "Incharge UG", type: "head" },
+                { name: "K. Priya", role: "Asst. Professor", },
+                { name: "A. Kavitha", role: "Asst. Professor", },
+                { name: "G. Samrat Krishna", role: "Asst. Professor", },
+                { name: "K. Sridhar", role: "Asst. Professor", },
+                { name: "Y.J.N. Lakshmi", role: "Asst. Professor", },
+                { name: "R. Gopi", role: "Asst. Professor", },
+                { name: "S. Rajesh", role: "Asst. Professor",},
+                { name: "V. Jhansi Lakshmi", role: "Asst. Professor", },
+                { name: "E. VVS Sivakumar", role: "Asst. Professor",  },
+                { name: "K. Veerendranadh", role: "Asst. Professor",  },
+                { name: "M. Vijitha", role: "Asst. Professor",  },
+                { name: "K. Ravi Shankar", role: "Asst. Professor",  },
+                { name: "Sk. Johnbee", role: "Asst. Professor", },
+                { name: "V. Sree Rekha", role: "Asst. Professor", },
+                { name: "B. Roja Priscilla", role: "Asst. Professor", },
+                { name: "Ch. Venkata Deepika", role: "Asst. Professor", },
+                { name: "K. Bhuvaneswari", role: "Asst. Professor", },
+                { name: "D. Sri Naga Prasanna", role: "Asst. Professor", },
+                { name: "K. Vani", role: "Asst. Professor", },
+                { name: "Ch. Kavya", role: "Asst. Professor", },
+                { name: "B. Harshitha Reddy", role: "Asst. Professor", },
+                { name: "P. Devika", role: "Asst. Professor", },
+                { name: "M. Indrani", role: "Asst. Professor", },
+                { name: "S. Meghana Naga Durga", role: "Asst. Professor", },
+                { name: "B. Prasanth", role: "Asst. Professor",},
+                { name: "Shaik Parveena", role: "Asst. Professor", },
+                { name: "N Lakshmi Kumari", role: "Asst. Professor", },
+                { name: "M Sravani", role: "Asst. Professor", },
+                { name: "Rajiya Sulthana SK", role: "Asst. Professor", }
+            ],
+            gallery: [
+                { 
+                    // Changed from unsplash URL to 'Image 1.jpeg'
+                    url: "Image 1.jpeg", 
+                    title: "            ", 
+                    desc: "              " 
+                },
+                { 
+                    // Changed from unsplash URL to 'image 2.jpeg'
+                    url: "image 2.jpeg", 
+                    title: "              ", 
+                    desc: "             " 
+                },
+                { 
+                    // Changed from unsplash URL to 'image 3.jpeg'
+                    url: "image 3.jpeg", 
+                    title: "           ", 
+                    desc: "   " 
+                },
+                { 
+                    // Changed from unsplash URL to 'image 4.jpeg'
+                    url: "image 4.jpeg", 
+                    title: "       ", 
+                    desc: "       " 
+                }
+            ],
+            // NEW PROGRAM-CENTRIC STRUCTURE
+            programs: [
+                {
+                    id: "bsc-h-cscs",
+                    name: "B.Sc(H) CSCS",
+                    fullName: "Bachelor of Science (Honours) in Computer Science and Cognitive System",
+                    icon: "cpu",
+                    description: "A specialized program integrating Computer Science with Statistics, Data Science, and Machine Learning.",
+                    years: [
+                        { year: 1, semesters: [
+                            { sem: 1, courses: [{name: "AI", chatLink: "www.google.com"}, {name: "C Programming", chatLink: "www.google.com"}]},
+                            { sem: 2, courses: [{name: "Data Structures", chatLink: "www.google.com"}, {name: "Operating Systems", chatLink: "www.google.com"}]}
+                        ]},
+                        { year: 2, semesters: [
+                            { sem: 3, courses: [{name: "OOP with Java", chatLink: "https://app.edcafe.ai/chatbots/68d4d37e98685581b42a9468"}, {name: "DBMS", chatLink: "https://app.edcafe.ai/chatbots/68d4d8ed13651e2c1221b19a"}, {name: "Computer Networks", chatLink: "https://app.edcafe.ai/chatbots/68d4d8ed13651e2c1221b19a"}]},
+                            { sem: 4, courses: [{name: "IT Infrastructure Management", chatLink: "www.google.com"}, {name: "Process Management", chatLink: "https://app.edcafe.ai/chatbots/68d4d8ed13651e2c1221b19a"}, {name: "Cloud Computing", chatLink: "www.google.com"}]}
+                        ]},
+                        { year: 3, semesters: [
+                            { sem: 5, courses: [{name: "IT Infrastructure Library", chatLink: "www.google.com"}, {name: "Software Engineering and Testing", chatLink: "https://app.edcafe.ai/chatbots/68ca67c987d1bc04c4f8a7d5"}, {name: "Client Relationship Management", chatLink: "https://app.edcafe.ai/chatbots/68df46ca2e79dc9dd026c6a5"}]},
+                            { sem: 6, courses: [{name: "Internship", }]}
+                        ]}
+                    ]
+                },
+                {
+                    id: "bsc-h-cs",
+                    name: "B.Sc(H) CS",
+                    fullName: "B.Sc (Honours) in Computer Science",
+                    icon: "database",
+                    description: "Advanced curriculum focusing on core Computer Science and cutting-edge software development.",
+                    years: [
+                        { year: 1, subtitle: "Data Fundamentals", semesters: [
+                            { sem: 1, courses: [{name: "Statistics", chatLink: "#"}, {name: "Python Intro", chatLink: "#"}, {name: "Linear Algebra", chatLink: "#"}]},
+                            { sem: 2, courses: [{name: "Data Mining", chatLink: "#"}, {name: "R Programming", chatLink: "#"}, {name: "Discrete Maths", chatLink: "#"}]}
+                        ]},
+                        { year: 2, subtitle: "Machine Learning & Big Data", semesters: [
+                            { sem: 3, courses: [{name: "ML Fundamentals", chatLink: "#"}, {name: "Big Data", chatLink: "#"}, {name: "SQL", chatLink: "#"}]},
+                            { sem: 4, courses: [{name: "Deep Learning I", chatLink: "#"}, {name: "NoSQL Databases", chatLink: "#"}, {name: "Neural Networks", chatLink: "#"}]}
+                        ]},
+                        { year: 3, subtitle: "AI & Capstone", semesters: [
+                            { sem: 5, courses: [{name: "AI & Expert Systems", chatLink: "#"}, {name: "Natural Language Processing (NLP)", chatLink: "#"}, {name: "Capstone Project I", chatLink: "#"}]},
+                            { sem: 6, courses: [{name: "Computer Vision", chatLink: "#"}, {name: "Cognitive Science", chatLink: "#"}, {name: "Capstone Project II", chatLink: "#"}]}
+                        ]}
+                    ]
+                },
+                {
+                    id: "bca-h",
+                    name: "B.C.A(H)",
+                    fullName: "Bachelor of Computer Applications (Honours)",
+                    icon: "code",
+                    description: "Application-focused degree with emphasis on software development, web technologies, and business applications.",
+                    years: [
+                        { year: 1, subtitle: "Applications & IT Basics", semesters: [
+                            { sem: 1, courses: [{name: "IT Fundamentals", chatLink: "#"}, {name: "C Language", chatLink: "#"}, {name: "Web Basics (HTML/CSS)", chatLink: "#"}]},
+                            { sem: 2, courses: [{name: "DBMS", chatLink: "#"}, {name: "Advanced C", chatLink: "#"}, {name: "Business Communication", chatLink: "#"}]}
+                        ]},
+                        { year: 2, subtitle: "Software Development", semesters: [
+                            { sem: 3, courses: [{name: "Java Programming", chatLink: "#"}, {name: "Operating Systems", chatLink: "#"}, {name: "Accounting", chatLink: "#"}]},
+                            { sem: 4, courses: [{name: "Advanced Java", chatLink: "#"}, {name: "Python for Apps", chatLink: "#"}, {name: "Networking", chatLink: "#"}]}
+                        ]},
+                        { year: 3, subtitle: "Professional Specialization", semesters: [
+                            { sem: 5, courses: [{name: "Mobile Apps Development", chatLink: "#"}, {name: "E-Commerce", chatLink: "#"}, {name: "Elective II", chatLink: "#"}]},
+                            { sem: 6, courses: [{name: "Software Testing", chatLink: "#"}, {name: "Cyber Security", chatLink: "#"}, {name: "Main Project", chatLink: "#"}]}
+                        ]}
+                    ]
+                }
+            ]
+        };
+
+        // --- APP STATE & NAVIGATION ---
+        let currentPage = 'home';
+        let currentProgram = null; // Stores the program object for program pages
+        let currentYear = null;     // Stores the year object for semester pages
+        let currentSemesterIndex = null;
+        let isCoursesOpen = false; // Menu dropdown state
+
+        const contentDiv = document.getElementById('app-content');
+        
+        // Gallery State
+        let slideIndex = 0;
+        let slideInterval;
+
+        function navigate(page, programId = null, yearIdx = null, semesterIndex = null) {
+            currentPage = page;
+            currentProgram = null;
+            currentYear = null;
+            currentSemesterIndex = null;
+
+            // Simple Page Navigation
+            if (['home', 'dept-details', 'dept-history', 'faculty'].includes(page)) {
+                // Do nothing to program/year state
+            } 
+            // Program Page Navigation (e.g., bsc-h-cs)
+            else if (['bsc-h-cs', 'bsc-h-cscs', 'bca-h'].includes(page)) {
+                currentProgram = departmentData.programs.find(p => p.id === page);
+            } 
+            // Year List Page Navigation (e.g., Click Year 1 of B.Sc(H) CS) - NOTE: This case seems unused in the UI
+            else if (page === 'year-list' && programId) {
+                currentProgram = departmentData.programs.find(p => p.id === programId);
+            }
+            // Semester List Page Navigation (e.g., Click Year 1 of B.Sc(H) CS)
+            else if (page === 'semester-list' && programId !== null && yearIdx !== null) {
+                currentProgram = departmentData.programs.find(p => p.id === programId);
+                currentYear = currentProgram ? currentProgram.years[yearIdx] : null;
+            } 
+            // Course List Page Navigation (e.g., Click Semester 1 of Year 1)
+            else if (page === 'course-list' && programId !== null && yearIdx !== null && semesterIndex !== null) {
+                currentProgram = departmentData.programs.find(p => p.id === programId);
+                currentYear = currentProgram ? currentProgram.years[yearIdx] : null;
+                currentSemesterIndex = semesterIndex;
+            }
+            
+            render();
+            window.scrollTo(0,0);
+            document.getElementById('nav-overlay').classList.add('hidden');
+            // Ensure the menu closes properly on deep navigation
+            isCoursesOpen = false;
+            document.getElementById('courses-dropdown').classList.add('hidden');
+            document.getElementById('courses-dropdown-icon').classList.remove('rotate-180');
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('nav-overlay');
+            menu.classList.toggle('hidden');
+        }
+        
+        function toggleCoursesMenu() {
+            isCoursesOpen = !isCoursesOpen;
+            document.getElementById('courses-dropdown').classList.toggle('hidden', !isCoursesOpen);
+            const icon = document.getElementById('courses-dropdown-icon');
+            if (icon) icon.classList.toggle('rotate-180', isCoursesOpen);
+        }
+
+        // --- SCROLL EFFECT ---
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('main-header');
+            const container = document.getElementById('header-container');
+            
+            if (window.scrollY > 10) {
+                header.classList.remove('py-6');
+                header.classList.add('py-4');
+                container.classList.add('bg-white/60', 'backdrop-blur-2xl', 'shadow-sm', 'rounded-full', 'mx-4', 'max-w-[calc(100%-2rem)]', 'border', 'border-white/40');
+            } else {
+                header.classList.add('py-6');
+                header.classList.remove('py-4');
+                container.classList.remove('bg-white/60', 'backdrop-blur-2xl', 'shadow-sm', 'rounded-full', 'mx-4', 'max-w-[calc(100%-2rem)]', 'border', 'border-white/40');
+            }
+        });
+
+        // --- GALLERY LOGIC ---
+        function initGallery() {
+            const sliderTrack = document.getElementById('slider-track');
+            if(!sliderTrack) return;
+            
+            // Clear existing interval
+            if (slideInterval) clearInterval(slideInterval);
+
+            // Auto Play
+            slideInterval = setInterval(() => {
+                moveSlide(1);
+            }, 5000);
+        }
+
+        function moveSlide(step) {
+            const slides = departmentData.gallery;
+            slideIndex = (slideIndex + step + slides.length) % slides.length;
+            
+            const track = document.getElementById('slider-track');
+            if(track) {
+                track.style.transform = `translateX(-${slideIndex * 100}%)`;
+            }
+
+            // Update dots
+            document.querySelectorAll('.dot-indicator').forEach((dot, idx) => {
+                if(idx === slideIndex) {
+                    dot.classList.add('bg-white', 'scale-125');
+                    dot.classList.remove('bg-white/50');
+                } else {
+                    dot.classList.remove('bg-white', 'scale-125');
+                    dot.classList.add('bg-white/50');
+                }
+            });
+        }
+        
+        // --- RENDER FUNCTIONS ---
+        
+        // **FIXED:** The function now correctly uses 'navigate' and has proper logic for nested pages.
+        // Back Button Logic: Correctly manages nested navigation state.
+        // It uses the parameters (targetPage, programId, yearIdx) to generate the correct 'navigate' call.
+        function renderBackButton(targetPage, programId = null, yearIdx = null) {
+            let clickHandler = `navigate('${targetPage}')`;
+            let backText = 'Back to Dashboard';
+
+            // Case 1: Going back from Course List (Semester) to the Semester List (Year View)
+            if (targetPage === 'semester-list' && programId && yearIdx !== null) {
+                // If it knows the program ID and year index, it calls navigate to reload the year list.
+                clickHandler = `navigate('semester-list', '${programId}', ${yearIdx})`;
+                backText = `Back to Year ${yearIdx + 1}`;
+            } 
+            // Case 2: Going back from the Semester List (Year View) to the Program Page (e.g., 'bsc-h-cs')
+            else if (['bsc-h-cs', 'bsc-h-cscs', 'bca-h'].includes(targetPage)) {
+                // If the target is a program ID, it calls navigate with only the program ID.
+                clickHandler = `navigate('${targetPage}')`;
+                const program = departmentData.programs.find(p => p.id === targetPage);
+                backText = `Back to ${program ? program.name : 'Courses'}`;
+            } 
+            // Case 3: Simple pages go back to 'home'
+            else if (targetPage === 'home' || ['dept-details', 'dept-history', 'faculty'].includes(targetPage)) {
+                clickHandler = `navigate('home')`;
+                backText = 'Back to Dashboard';
+            }
+            
+            return `
+                <div class="flex items-center gap-4 mb-8">
+                    <button onclick="${clickHandler}" class="group w-10 h-10 rounded-full bg-white/60 border border-white/40 backdrop-blur-md shadow-sm flex items-center justify-center text-[#1d1d1f] hover:bg-white transition-all hover:scale-110">
+                        <i data-lucide="chevron-left" width="20" class="group-hover:-translate-x-0.5 transition-transform"></i>
+                    </button>
+                    <span class="text-sm font-medium text-gray-500">${backText}</span>
+                </div>
+            `;
+        }
+        
+        function renderProgramPage(program) {
+            return `
+                <div class="fade-in max-w-5xl mx-auto pt-4">
+                    ${renderBackButton('home')}
+
+                    <div class="glass-panel !bg-white/40 rounded-[32px] p-10 mb-12">
+                        <h1 class="text-5xl md:text-7xl font-semibold tracking-tight text-[#1d1d1f] mb-4 drop-shadow-sm">${program.name}</h1>
+                        <h2 class="text-2xl md:text-3xl font-medium text-[#0066CC] mb-6 tracking-tight">${program.fullName}</h2>
+                        <p class="text-xl md:text-2xl font-normal leading-relaxed text-[#515154] max-w-3xl">${program.description}</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                        ${program.years.map((year, index) => `
+                            <div onclick="navigate('semester-list', '${program.id}', ${index})" class="glass-panel cursor-pointer hover:scale-[1.02] transition-all duration-500 rounded-[32px] p-8 group flex flex-col h-full min-h-[250px] !bg-white/40 hover:!bg-white/60">
+                                <div class="mb-4">
+                                    <span class="text-6xl font-semibold text-[#1d1d1f]/5 group-hover:text-[#0066CC]/10 transition-colors">0${year.year}</span>
+                                </div>
+                                <div class="mt-auto">
+                                    <h3 class="text-2xl font-semibold text-[#1d1d1f] mb-1">Year ${year.year}</h3>
+                                    <p class="text-[#86868b] font-medium mb-6">${year.subtitle}</p>
+                                    
+                                    <div class="flex items-center justify-between border-t border-gray-200/50 pt-4">
+                                        <span class="text-xs font-semibold text-[#0066CC]">View Semesters</span>
+                                        <div class="w-6 h-6 rounded-full bg-blue-50/50 flex items-center justify-center">
+                                            <i data-lucide="arrow-right" class="text-[#0066CC]" width="12"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSemesterListPage(program, year) {
+            const yearIdx = program.years.findIndex(y => y.year === year.year);
+            return `
+                <div class="fade-in max-w-5xl mx-auto pt-4">
+                    ${renderBackButton(program.id)} <div class="glass-panel !bg-white/40 rounded-[32px] p-10 mb-12">
+                        <h1 class="text-5xl md:text-7xl font-semibold tracking-tight text-[#1d1d1f] mb-4 drop-shadow-sm">${program.name}</h1>
+                        <h2 class="text-2xl md:text-3xl font-medium text-[#0066CC] mb-6 tracking-tight">Year ${year.year} Syllabus</h2>
+                        <p class="text-xl md:text-2xl font-normal leading-relaxed text-[#515154] max-w-3xl">Select a Semester to view the detailed course syllabus and resources.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                        ${year.semesters.map((semester, index) => `
+                            <div onclick="navigate('course-list', '${program.id}', ${yearIdx}, ${index})" class="glass-panel cursor-pointer hover:scale-[1.02] transition-all duration-500 rounded-[32px] p-8 group flex flex-col h-full min-h-[200px] !bg-white/40 hover:!bg-white/60">
+                                <div class="mb-4">
+                                    <span class="text-6xl font-semibold text-[#1d1d1f]/5 group-hover:text-[#0066CC]/10 transition-colors">S${semester.sem}</span>
+                                </div>
+                                <div class="mt-auto">
+                                    <h3 class="text-2xl font-semibold text-[#1d1d1f] mb-1">Semester ${semester.sem}</h3>
+                                    <p class="text-[#86868b] font-medium mb-6">${semester.courses.length} Core Subjects</p>
+                                    
+                                    <div class="flex items-center justify-between border-t border-gray-200/50 pt-4">
+                                        <span class="text-xs font-semibold text-[#0066CC]">View Subjects</span>
+                                        <div class="w-6 h-6 rounded-full bg-blue-50/50 flex items-center justify-center">
+                                            <i data-lucide="arrow-right" class="text-[#0066CC]" width="12"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCourseListPage(program, year, semesterIndex) {
+            const semester = year.semesters[semesterIndex];
+            const yearIdx = program.years.findIndex(y => y.year === year.year);
+            
+            return `
+                <div class="fade-in max-w-5xl mx-auto pt-4">
+                    ${renderBackButton('semester-list', program.id, yearIdx)} <div class="glass-panel !bg-white/40 rounded-[32px] p-10 mb-12">
+                        <h1 class="text-5xl md:text-7xl font-semibold tracking-tight text-[#1d1d1f] mb-4 drop-shadow-sm">${program.name}</h1>
+                        <h2 class="text-2xl md:text-3xl font-medium text-[#0066CC] mb-6 tracking-tight">Year ${year.year} - Semester ${semester.sem} Syllabus</h2>
+                        <p class="text-xl md:text-2xl font-normal leading-relaxed text-[#515154] max-w-3xl">Click on 'Chat' to access the external subject link.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                        ${semester.courses.map((course, index) => `
+                            <div class="glass-panel !p-6 !bg-white/50 hover:!bg-white/70 transition-all duration-500 rounded-[32px] flex flex-col justify-between min-h-[160px]">
+                                <div>
+                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-white border border-white/60 text-[#0066CC] flex items-center justify-center mb-4 shadow-sm">
+                                        <i data-lucide="book-open" width="20"></i>
+                                    </div>
+                                    <h4 class="text-xl font-semibold text-[#1d1d1f] tracking-tight mb-2">${course.name}</h4>
+                                </div>
+                                <div class="mt-4 flex justify-between items-center border-t border-gray-200/50 pt-4">
+                                    <span class="text-sm text-[#86868b] font-medium">Subject ${index + 1}</span>
+                                    <a href="${course.chatLink}" target="_blank" class="px-4 py-2 rounded-full bg-[#0066CC] hover:bg-[#004499] text-white text-sm font-medium transition-colors flex items-center gap-2 shadow-md">
+                                        Chat <i data-lucide="message-square" width="16"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFacultyPage() {
+             return `
+                <div class="fade-in max-w-5xl mx-auto pt-4">
+                    ${renderBackButton('home')}
+
+                    <div class="glass-panel !bg-white/40 rounded-[32px] p-10 mb-12">
+                        <h1 class="text-5xl md:text-7xl font-semibold tracking-tight text-[#1d1d1f] mb-4 drop-shadow-sm">Our Faculty</h1>
+                        <h2 class="text-2xl md:text-3xl font-medium text-[#0066CC] mb-6 tracking-tight">The Pillars of the Department</h2>
+                        <p class="text-xl md:text-2xl font-normal leading-relaxed text-[#515154] max-w-3xl">Our experienced team is dedicated to mentoring the next generation of technologists.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                        ${departmentData.faculty.map(member => `
+                            <div class="glass-panel !p-6 !bg-white/50 hover:!bg-white/70 transition-all duration-500 rounded-[32px]">
+                                <div class="flex items-center gap-6 mb-4 border-b border-gray-200/50 pb-4">
+                                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-100 to-white border border-white/60 text-[#0066CC] flex items-center justify-center shadow-md">
+                                        <i data-lucide="${member.icon}" width="30"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xl font-bold text-[#1d1d1f] tracking-tight">${member.name}</h4>
+                                        <p class="text-sm text-[#6e6e73] font-medium">${member.designation}</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-2 pt-2">
+                                    <div class="flex items-center gap-2 text-sm text-[#515154]">
+                                        <i data-lucide="briefcase" width="16" class="text-[#0066CC]"></i>
+                                        <span class="font-medium">${member.specialization}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-sm text-[#515154]">
+                                        <i data-lucide="mail" width="16" class="text-[#0066CC]"></i>
+                                        <a href="mailto:${member.email}" class="text-blue-500 hover:text-blue-700 transition-colors">${member.email}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+             `;
+        }
+
+
+        // --- MAIN RENDER LOGIC ---
+        function render() {
+            // Clean up intervals when leaving home
+            if (currentPage !== 'home' && slideInterval) {
+                clearInterval(slideInterval);
+            }
+
+            let html = '';
+
+            if (currentPage === 'home') {
+                html = `
+                <div class="flex flex-col gap-6 h-full fade-in">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div onclick="navigate('dept-details')" class="glass-panel cursor-pointer hover:scale-[1.02] transition-all duration-500 rounded-[32px] p-8 lg:col-span-2 flex flex-col justify-between min-h-[440px] group relative overflow-hidden">
+                            <div class="absolute right-0 top-0 w-[400px] h-[400px] bg-blue-400/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3 pointer-events-none group-hover:bg-blue-400/30 transition-colors duration-700"></div>
+                            
+                            <div class="relative z-10">
+                                <div class="flex items-center gap-2 mb-6">
+                                    <span class="px-3 py-1 rounded-full bg-[#1d1d1f]/10 border border-[#1d1d1f]/10 text-[#1d1d1f] text-[11px] font-semibold tracking-wider uppercase backdrop-blur-md">P.B. Siddhartha</span>
+                                </div>
+                                <h2 class="text-4xl md:text-5xl font-semibold tracking-tight text-[#1d1d1f] mb-4 leading-[1.1] drop-shadow-sm">
+                                    Department of <br/>
+                                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#0066CC] to-[#5AC8FA]">Computer Science.</span>
+                                </h2>
+                                <p class="text-lg text-[#6e6e73] font-medium max-w-md leading-relaxed">
+                                    Empowering students with technology and innovation at Vijayawada's premier autonomous institution.
+                                </p>
+                            </div>
+
+                            <div class="relative z-10 flex items-end justify-between mt-8">
+                                <div class="flex gap-8">
+                                    ${departmentData.details.stats.map(s => `
+                                        <div>
+                                            <div class="text-3xl font-semibold text-[#1d1d1f]">${s.value}</div>
+                                            <div class="text-xs font-medium text-[#86868b] uppercase tracking-wide mt-1">${s.label}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-[#0066CC] text-white flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform">
+                                    <i data-lucide="arrow-right" width="20"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div onclick="navigate('dept-history')" class="glass-panel-dark cursor-pointer hover:scale-[1.02] transition-all duration-500 rounded-[32px] p-8 lg:col-span-1 flex flex-col justify-between min-h-[440px] group relative overflow-hidden">
+                             <div class="absolute top-0 right-0 w-64 h-64 bg-purple-500/30 rounded-full blur-[60px] pointer-events-none"></div>
+                             
+                             <div class="relative z-10">
+                                <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center mb-6">
+                                    <i data-lucide="clock" class="text-white/80" width="24"></i>
+                                </div>
+                                <h2 class="text-3xl font-semibold mb-2 text-white">Legacy.</h2>
+                                <p class="text-white/60 font-medium text-lg">Excellence since 1975.</p>
+                             </div>
+
+                             <div class="relative z-10 mt-8 space-y-4">
+                                ${departmentData.history.milestones.slice(0,3).map(m => `
+                                    <div class="flex items-center gap-3 text-sm text-white/70">
+                                        <span class="font-mono text-purple-300 bg-purple-500/20 px-1.5 rounded">${m.year}</span>
+                                        <div class="h-px bg-white/10 flex-1"></div>
+                                        <span class="truncate">${m.event}</span>
+                                    </div>
+                                `).join('')}
+                                <div class="pt-4 flex items-center gap-2 text-sm font-medium text-white/90 group-hover:text-white">
+                                    View full timeline <i data-lucide="arrow-right" width="14"></i>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full">
+                        <div class="flex items-center justify-between mb-4 px-2">
+                             <h3 class="text-xl font-semibold text-[#1d1d1f]">Campus Life Gallery</h3>
+                             <div class="flex gap-2">
+                                <button onclick="moveSlide(-1)" class="w-8 h-8 rounded-full bg-white/50 hover:bg-white border border-white/40 flex items-center justify-center transition-all">
+                                    <i data-lucide="chevron-left" width="16"></i>
+                                </button>
+                                <button onclick="moveSlide(1)" class="w-8 h-8 rounded-full bg-white/50 hover:bg-white border border-white/40 flex items-center justify-center transition-all">
+                                    <i data-lucide="chevron-right" width="16"></i>
+                                </button>
+                             </div>
+                        </div>
+                        
+                        <div class="glass-panel relative w-full h-[400px] md:h-[500px] rounded-[32px] overflow-hidden group">
+                            <div id="slider-track" class="flex w-full h-full transition-transform duration-700 ease-[cubic-bezier(0.25,0.1,0.25,1)]">
+                                ${departmentData.gallery.map((img, i) => `
+                                    <div class="min-w-full h-full relative">
+                                        <img src="${img.url}" class="w-full h-full object-cover" alt="${img.title}" />
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                                        <div class="absolute bottom-0 left-0 p-8 md:p-12 text-white">
+                                            <h4 class="text-3xl font-bold mb-2 tracking-tight">${img.title}</h4>
+                                            <p class="text-white/80 text-lg">${img.desc}</p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="absolute bottom-6 right-6 flex gap-2 z-10">
+                                ${departmentData.gallery.map((_, i) => `
+                                    <div class="dot-indicator w-2 h-2 rounded-full transition-all duration-300 ${i === 0 ? 'bg-white scale-125' : 'bg-white/50'}"></div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 grow">
+                        ${departmentData.programs.map((program, idx) => `
+                            <div onclick="navigate('${program.id}')" class="glass-panel cursor-pointer hover:scale-[1.02] transition-all duration-500 rounded-[32px] p-8 group flex flex-col h-full min-h-[300px]">
+                                <div class="mb-4">
+                                    <span class="text-6xl font-semibold text-[#1d1d1f]/5 group-hover:text-[#0066CC]/10 transition-colors">0${idx + 1}</span>
+                                </div>
+                                <div class="mt-auto">
+                                    <h3 class="text-2xl font-semibold text-[#1d1d1f] mb-1">${program.name}</h3>
+                                    <p class="text-[#86868b] font-medium mb-6">${program.fullName}</p>
+                                    
+                                    <div class="flex items-center justify-between border-t border-gray-200/50 pt-4">
+                                        <span class="text-xs font-semibold text-[#0066CC]">Explore Curriculum</span>
+                                        <div class="w-6 h-6 rounded-full bg-blue-50/50 flex items-center justify-center">
+                                            <i data-lucide="arrow-right" class="text-[#0066CC]" width="12"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                `;
+            } else if (currentPage === 'dept-details') {
+                html = `
+                <div class="fade-in max-w-5xl mx-auto pt-4">
+                    ${renderBackButton('home')}
+
+                    <div class="glass-panel !bg-white/40 rounded-[32px] p-10 mb-12">
+                        <h1 class="text-5xl md:text-7xl font-semibold tracking-tight text-[#1d1d1f] mb-4 drop-shadow-sm">${departmentData.details.title}</h1>
+                        <h2 class="text-2xl md:text-3xl font-medium text-[#0066CC] mb-6 tracking-tight">P.B. Siddhartha College.</h2>
+                        <p class="text-xl md:text-2xl font-normal leading-relaxed text-[#515154] max-w-3xl">${departmentData.details.content}</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                        <div class="glass-panel rounded-[32px] p-8 min-h-[240px] flex flex-col justify-between !bg-white/40 hover:!bg-white/60 transition-all duration-500">
+                             <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-50 to-white border border-white/60 text-[#0066CC] flex items-center justify-center mb-4 shadow-sm">
+                                <i data-lucide="book-open" width="22"></i>
+                             </div>
+                             <div>
+                                <h3 class="text-lg font-semibold text-[#1d1d1f] mb-2">Vision</h3>
+                                <p class="text-[#6e6e73] leading-relaxed text-sm">To be a leading center for education in Computer Science.</p>
+                             </div>
+                        </div>
+                        <div class="glass-panel rounded-[32px] p-8 min-h-[240px] flex flex-col justify-between !bg-white/40 hover:!bg-white/60 transition-all duration-500">
+                             <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-50 to-white border border-white/60 text-[#0066CC] flex items-center justify-center mb-4 shadow-sm">
+                                <i data-lucide="award" width="22"></i>
+                             </div>
+                             <div>
+                                <h3 class="text-lg font-semibold text-[#1d1d1f] mb-2">Mission</h3>
+                                <p class="text-[#6e6e73] leading-relaxed text-sm">Providing quality education with a focus on ethical values.</p>
+                             </div>
+                        </div>
+                        <div class="glass-panel rounded-[32px] p-8 min-h-[240px] flex flex-col justify-between !bg-white/40 hover:!bg-white/60 transition-all duration-500">
+                             <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-50 to-white border border-white/60 text-[#0066CC] flex items-center justify-center mb-4 shadow-sm">
+                                <i data-lucide="sparkles" width="22"></i>
+                             </div>
+                             <div>
+                                <h3 class="text-lg font-semibold text-[#1d1d1f] mb-2">Values</h3>
+                                <p class="text-[#6e6e73] leading-relaxed text-sm">Discipline, Dedication, and Innovation.</p>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            } else if (currentPage === 'dept-history') {
+                html = `
+                <div class="fade-in max-w-5xl mx-auto pt-4">
+                    ${renderBackButton('home')}
+
+                    <div class="glass-panel !bg-white/40 rounded-[32px] p-10 mb-12">
+                        <h1 class="text-5xl md:text-7xl font-semibold tracking-tight text-[#1d1d1f] mb-4 drop-shadow-sm">Our Legacy</h1>
+                        <h2 class="text-2xl md:text-3xl font-medium text-[#0066CC] mb-6 tracking-tight">Decades of Excellence</h2>
+                        <p class="text-xl md:text-2xl font-normal leading-relaxed text-[#515154] max-w-3xl">${departmentData.history.content}</p>
+                    </div>
+
+                    <div class="relative mt-8 max-w-4xl">
+                        <div class="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-gray-300 to-transparent"></div>
+                        
+                        ${departmentData.history.milestones.map(item => `
+                            <div class="relative pl-24 py-8 group">
+                                <div class="absolute left-[26px] top-10 w-3 h-3 rounded-full bg-white border-[3px] border-[#0066CC] z-10 shadow-[0_0_10px_rgba(0,102,204,0.3)] group-hover:scale-125 transition-transform"></div>
+                                <div class="glass-panel !p-6 !bg-white/40 hover:!bg-white/60 transition-all duration-500 rounded-[32px] flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-8">
+                                    <span class="text-2xl font-bold text-[#1d1d1f] tracking-tight">${item.year}</span>
+                                    <span class="text-lg text-[#6e6e73] font-medium">${item.event}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                `;
+            } else if (currentPage === 'faculty') {
+                html = renderFacultyPage();
+            } else if (['bsc-h-cs', 'bsc-h-cscs', 'bca-h'].includes(currentPage) && currentProgram) {
+                // Renders the list of Years (1st, 2nd, 3rd) for a program
+                html = renderProgramPage(currentProgram);
+            } else if (currentPage === 'semester-list' && currentProgram && currentYear) {
+                // Renders the list of Semesters (1, 2) for a specific year
+                html = renderSemesterListPage(currentProgram, currentYear);
+            } else if (currentPage === 'course-list' && currentProgram && currentYear && currentSemesterIndex !== null) {
+                // Renders the list of Courses for a specific semester
+                html = renderCourseListPage(currentProgram, currentYear, currentSemesterIndex);
+            }
+            // The default `else` case is removed as all valid navigation is handled above.
+
+            // Inject HTML
+            contentDiv.innerHTML = html;
+            
+            // Re-initialize Icons
+            lucide.createIcons();
+
+            // Init Gallery logic if we are on home
+            if(currentPage === 'home') {
+                initGallery();
+            }
+        }
+
+        // Initial Render
+        render();
+
+    </script>
